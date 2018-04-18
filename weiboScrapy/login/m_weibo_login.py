@@ -7,6 +7,7 @@ import time
 import base64
 from http import cookiejar
 
+import os
 import rsa
 import binascii
 import requests
@@ -228,25 +229,31 @@ class WeiboLogin(object):
         # 可以通过 session.cookies 对 cookies 进行下一步相关操作
         self.session.cookies.save()
 
-    def send_cookies(self, spidername):
-        cookies = cookiejar.LWPCookieJar(cookie_path)
+    def get_cookies_from_txt(self):
+        cookies = cookiejar.LWPCookieJar(self.cookie_path)
         cookies.load(ignore_discard=True, ignore_expires=True)
         cookie_str = requests.utils.dict_from_cookiejar(cookies)
         print(cookie_str)
+        return cookie_str
+
+    def send_cookies(self, spidername):
         # with open(self.cookie_path, "r") as f:
         #     cookie_str = f.read()
+        cookie_str = self.get_cookies_from_txt()
         r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
         #     # print(cookie_str)
         r.set(self.user + "--" + spidername, cookie_str)
 
 
-def spider_login(self, username, password, spidername):
-    spider_cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
+def spider_login(username, password, spidername):
+    # spider_cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
+    spider_cookie_path = '/Users/zhikuncheng/IdeaProjects/weiboScrapy/weiboScrapy/' + username + ".txt"
+    print(spider_cookie_path)
     # spider_cookie_path = "/home/docker/work_space/weiboScrapy/" + username + ".txt"  # 保存cookie 的文件名称
-    spider_weibo = WeiboLogin(username, password, cookie_path)
+    spider_weibo = WeiboLogin(username, password, spider_cookie_path)
     spider_weibo.login()
-    spider_weibo.send_cookies(spidername)
-    return True
+    # spider_weibo.send_cookies(spidername)
+    return spider_weibo.get_cookies_from_txt()
 
 
 if __name__ == '__main__':
@@ -256,12 +263,11 @@ if __name__ == '__main__':
         username = id_pair['username']
         password = id_pair['password']
         # cookie_path = "/home/docker/work_space/weiboScrapy/" + username + ".txt"  # 保存cookie 的文件名称
-        cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
-
-        weibo = WeiboLogin(username, password, cookie_path)
-
-
-        # username = "15678264837"  # 用户名
-        # password = "poiu11292"  # 密码
-        # cookie_path = "/home/docker/work_space/weiboScrapy/cookies.txt"  # 保存cookie 的文件名称
-        # weibo.send_cookies()
+        # cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
+        #
+        # weibo = WeiboLogin(username, password, cookie_path)
+        print(spider_login(username, password, "test"))
+# username = "15678264837"  # 用户名
+# password = "poiu11292"  # 密码
+# cookie_path = "/home/docker/work_space/weiboScrapy/cookies.txt"  # 保存cookie 的文件名称
+# weibo.send_cookies()
