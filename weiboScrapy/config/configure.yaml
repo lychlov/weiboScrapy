@@ -1,4 +1,20 @@
 # coding:utf-8
+weiboID:
+    - username: '15678264837'
+      password: poiu11292
+#    - username: 15577724762
+#      password: poiu11292
+#    - username: 15678075354
+#      password: poiu11292
+#    - username: 18404477785
+#      password: poiu11292
+#    - username: 15678265034
+#      password: poiu11292
+
+keywords:
+  - word: '绝地求生'
+
+
 mongodb:
     host: 127.0.0.1
     port: 27017

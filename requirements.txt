@@ -1,3 +1,7 @@
+selenium
 scrapy
 PyYAML
 pymongo
+rsa
+PIL
+requests
