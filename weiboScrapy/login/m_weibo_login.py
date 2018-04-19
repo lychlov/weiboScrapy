@@ -242,7 +242,7 @@ class WeiboLogin(object):
         cookie_str = self.get_cookies_from_txt()
         r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
         #     # print(cookie_str)
-        r.set(self.user + "--" + spidername, cookie_str)
+        r.set('cookie:'+self.user + "--" + spidername, cookie_str)
 
 
 def spider_login(username, password, spidername):

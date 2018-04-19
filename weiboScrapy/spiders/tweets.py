@@ -114,8 +114,14 @@ class TweetsSpider(scrapy.Spider):
                                 if content.find(word) >= 0:
                                     tags = tags + word + ";"
                         tweet_item['tags'] = tags
-                        tweet_item['retweeted_status'] =
-                        tweet_item['retweeted_tweetid'] =
+                        if 'retweeted_status' in card['mblog']:
+                            tweet_item['retweeted_tweetid'] = card['mblog']['retweeted_status']['id']
+                            retweeted_content = ""
+                            if not card['mblog']['retweeted_status']['isLongText']:
+                                retweeted_content = card['mblog']['retweeted_status']['text']
+                            else:
+                                retweeted_content = card['mblog']['retweeted_status']['longText']['longTextContent']
+                                tweet_item['retweeted_content'] = retweeted_content
                         print("返回了tweet_item")
                         yield tweet_item
                         # 用户信息
@@ -136,7 +142,7 @@ class TweetsSpider(scrapy.Spider):
                         user_item['follow_count'] = usr_info['follow_count']
                         yield user_item
                     except Exception as e:
-                        print('-'*10)
+                        print('-' * 10)
                         print('发生了异常')
                         print(e)
                         print('-' * 10)

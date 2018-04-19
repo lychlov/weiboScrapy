@@ -27,8 +27,9 @@ class TweetItem(scrapy.Item):
     id_user = scrapy.Field()
     source = scrapy.Field()
     pics = scrapy.Field()
-    retweeted_status = scrapy.Field()
     retweeted_tweetid = scrapy.Field()
+    retweeted_content = scrapy.Field()
+
 
 
 
