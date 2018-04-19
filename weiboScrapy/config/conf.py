@@ -6,6 +6,7 @@ from yaml import load
 config_path = os.path.join(os.path.dirname(__file__), "configure.yaml")
 
 with open(config_path, encoding='utf-8') as f:
+    # with open(config_path) as f:
     cont = f.read()
 
 cf = load(cont)

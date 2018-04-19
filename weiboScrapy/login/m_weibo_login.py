@@ -246,8 +246,8 @@ class WeiboLogin(object):
 
 
 def spider_login(username, password, spidername):
-    # spider_cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
-    spider_cookie_path = '/Users/zhikuncheng/IdeaProjects/weiboScrapy/weiboScrapy/' + username + ".txt"
+    spider_cookie_path = "D:\PyCharmProjects\weiboScrapy\weiboScrapy\login\\" + username + ".txt"  # 保存cookie 的文件名称
+    # spider_cookie_path = '/Users/zhikuncheng/IdeaProjects/weiboScrapy/weiboScrapy/' + username + ".txt"
     print(spider_cookie_path)
     # spider_cookie_path = "/home/docker/work_space/weiboScrapy/" + username + ".txt"  # 保存cookie 的文件名称
     spider_weibo = WeiboLogin(username, password, spider_cookie_path)
