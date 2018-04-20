@@ -12,9 +12,17 @@ with open(config_path, encoding='utf-8') as f:
 cf = load(cont)
 
 
-def get_weibo_id():
-    return cf.get('weiboID')
+def get_weibo_id_for_tweets():
+    return cf.get('weiboIDForTweets')
+
+
+def get_weibo_id_for_comments():
+    return cf.get('weiboIDForComments')
 
 
 def get_keywords():
     return cf.get('keywords')
+
+
+def get_redis():
+    return cf.get('redis')

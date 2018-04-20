@@ -1,18 +1,40 @@
 # coding:utf-8
-weiboID:
+weiboIDForTweets:
     - username: '15678264837'
       password: poiu11292
 #    - username: 15577724762
 #      password: poiu11292
 #    - username: 15678075354
 #      password: poiu11292
-#    - username: 18404477785
-#      password: poiu11292
-#    - username: 15678265034
-#      password: poiu11292
+#
+
+weiboIDForComments:
+    - username: 15678265034
+      password: poiu11292
+
+weiboIDForUserSearch:
+    - username: 18404477785
+      password: poiu11292
+
 
 keywords:
-  - word: '绝地求生'
+  - word: '绝地求生+XDD'
+  - word: '绝地求生+呆妹儿'
+
+#翻页上限：
+max_page_for_tweets:
+
+max_page_for_comments:
+
+userid:
+
+username:
+
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+
 
 
 mongodb:

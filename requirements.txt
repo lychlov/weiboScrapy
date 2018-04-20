@@ -5,3 +5,4 @@ pymongo
 rsa
 PIL
 requests
+redis

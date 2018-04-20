@@ -6,10 +6,10 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 
-
 # class WeiboscrapyPipeline(object):
 #     def process_item(self, item, spider):
 #         return item
+import redis
 
 
 class TweetMongoPipeline(object):
@@ -34,29 +34,42 @@ class TweetMongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        # print('-' * 10)
-        # print(item['type'])
-        # print('-' * 10)
-
         # 在名为tweets的Collection中存储微博内容信息
-        if 'screen_name' not in item:
-            print('-' * 10)
-            print(item)
-            print('-' * 10)
-            self.collection_name = 'tweets'
-            try:
-                self.db[self.collection_name].insert_one(dict(item))
-                # 存入redis
-                r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
-                r.set('tweet:' + item['_id'], item['_id'])
+        if spider.name == 'tweets':
+            if 'screen_name' not in item:
+                # print('-' * 10)
+                # print(item)
+                # print('-' * 10)
+                self.collection_name = 'tweets'
+                try:
+                    self.db[self.collection_name].insert_one(dict(item))
+                    # 存入redis
+                    r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+                    r.set('tweet:' + item['_id'], item['_id'])
+                    return item
+                except Exception as e:
+                    print("tweet重复")
+            # 在名为users的Collection中存储用户信息
+            if 'screen_name' in item:
+                self.collection_name = 'users'
+                try:
+                    self.db[self.collection_name].insert_one(dict(item))
+                except Exception as e:
+                    print("user重复")
                 return item
-            except Exception as e:
-                print(e)
 
-        # 在名为users的Collection中存储用户信息
-        if 'screen_name' in item:
-            self.collection_name = 'users'
-            self.db[self.collection_name].insert_one(dict(item))
-            return item
-
-
+        if spider.name == 'comments':
+            if 'screen_name' not in item:
+                self.collection_name = 'comments'
+                try:
+                    self.db[self.collection_name].insert_one(dict(item))
+                    return item
+                except Exception as e:
+                    print("重复")
+            if 'screen_name' in item:
+                self.collection_name = 'comments_users'
+                try:
+                    self.db[self.collection_name].insert_one(dict(item))
+                except Exception as e:
+                    print("user重复")
+                return item

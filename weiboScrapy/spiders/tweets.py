@@ -4,7 +4,7 @@ import json
 import redis
 import scrapy
 
-from weiboScrapy.config import get_weibo_id, get_keywords
+from weiboScrapy.config import get_weibo_id_for_tweets, get_keywords
 from weiboScrapy.items import TweetItem, UserItem
 from weiboScrapy.login import spider_login
 from weiboScrapy.utils.time_transfor import time_trans
@@ -14,7 +14,7 @@ class TweetsSpider(scrapy.Spider):
     name = 'tweets'
     allowed_domains = ['weibo.cn']
     start_urls = ['http://m.weibo.cn/']
-    weibo_id = get_weibo_id()
+    weibo_id = get_weibo_id_for_tweets()
     keywords = get_keywords()
     # max_page = 100
     max_page = 3
@@ -32,13 +32,14 @@ class TweetsSpider(scrapy.Spider):
         #             self.cookies = r.get(username + '--' + self.name)
         #         else:
         #             return
-        for id_pair in self.weibo_id:
-            username = id_pair['username']
-            password = id_pair['password']
-        self.cookies = spider_login(username, password, self.name)
+        # 似乎无需登录
+        # for id_pair in self.weibo_id:
+        #     username = id_pair['username']
+        #     password = id_pair['password']
+        # self.cookies = spider_login(username, password, self.name)
         for keyword in self.keywords:
             url_for_keyword = self.url_for_keywords + keyword['word']
-            yield scrapy.Request(url=url_for_keyword, cookies=self.cookies, callback=self.parse)
+            yield scrapy.Request(url=url_for_keyword,  callback=self.parse)
 
     def parse(self, response):
         """
@@ -66,16 +67,16 @@ class TweetsSpider(scrapy.Spider):
                         pics：图片
         """
         data_json = json.loads(response.body.decode('utf-8'))
-        string = json.dumps(data_json)
+        # string = json.dumps(data_json)
         # print('--' * 10)
         # print(string)
         # print('--' * 10)
-        f = open('/home/docker/work_space/weiboScrapy/json.txt', 'w')
-        f.write(string)
-        f.close()
-        print('-' * 10)
-        print(data_json['ok'])
-        print('-' * 10)
+        # f = open('/home/docker/work_space/weiboScrapy/json.txt', 'w')
+        # f.write(string)
+        # f.close()
+        # print('-' * 10)
+        # print(data_json['ok'])
+        # print('-' * 10)
         if data_json['ok'] == 0:
             return
         cards_list = data_json['data']['cards']
@@ -103,7 +104,7 @@ class TweetsSpider(scrapy.Spider):
                         tweet_item['reposts_count'] = card['mblog']['reposts_count']
                         tweet_item['comments_count'] = card['mblog']['comments_count']
                         tweet_item['attitudes_count'] = card['mblog']['attitudes_count']
-                        tweet_item['id_user'] = card['mblog']['user']['id']
+                        tweet_item['user_id'] = card['mblog']['user']['id']
                         tweet_item['source'] = card['mblog']['source']
                         if 'pics' in card['mblog']:
                             tweet_item['pics'] = card['mblog']['pics']
@@ -135,7 +136,8 @@ class TweetsSpider(scrapy.Spider):
                         user_item['statuses_count'] = usr_info['statuses_count']
                         user_item['verified'] = usr_info['verified']
                         user_item['verified_type'] = usr_info['verified_type']
-                        user_item['verified_reason'] = usr_info['verified_reason']
+                        if 'verified_reason' in user_item:
+                            user_item['verified_reason'] = usr_info['verified_reason']
                         user_item['description'] = usr_info['description']
                         user_item['gender'] = usr_info['gender']
                         user_item['followers_count'] = usr_info['followers_count']
@@ -154,7 +156,7 @@ class TweetsSpider(scrapy.Spider):
             if current_page > self.max_page:
                 return
             target_url = target_url.split('&page=')[0] + '&page=' + str(current_page)
-            yield scrapy.Request(url=target_url, cookies=self.cookies, callback=self.parse)
+            yield scrapy.Request(url=target_url, callback=self.parse)
         else:
             target_url = target_url + '&page=2'
-            yield scrapy.Request(url=target_url, cookies=self.cookies, callback=self.parse)
+            yield scrapy.Request(url=target_url,  callback=self.parse)

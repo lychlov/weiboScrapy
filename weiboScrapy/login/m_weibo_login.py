@@ -18,7 +18,7 @@ import random
 from urllib.parse import quote_plus
 import http.cookiejar as cookielib
 
-from weiboScrapy.config import get_weibo_id
+from weiboScrapy.config import get_weibo_id_for_tweets
 
 """
 整体的思路是，
@@ -257,7 +257,7 @@ def spider_login(username, password, spidername):
 
 
 if __name__ == '__main__':
-    weibo_id = get_weibo_id()
+    weibo_id = get_weibo_id_for_tweets()
     print(weibo_id)
     for id_pair in weibo_id:
         username = id_pair['username']

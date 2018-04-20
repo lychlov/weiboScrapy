@@ -24,13 +24,11 @@ class TweetItem(scrapy.Item):
     reposts_count = scrapy.Field()
     comments_count = scrapy.Field()
     attitudes_count = scrapy.Field()
-    id_user = scrapy.Field()
+    user_id = scrapy.Field()
     source = scrapy.Field()
     pics = scrapy.Field()
     retweeted_tweetid = scrapy.Field()
     retweeted_content = scrapy.Field()
-
-
 
 
 class UserItem(scrapy.Item):
@@ -48,6 +46,21 @@ class UserItem(scrapy.Item):
     follow_count = scrapy.Field()
 
 
-
 class CommentItem(scrapy.Item):
-    pass
+    _id = scrapy.Field()
+    created_at = scrapy.Field()
+    source = scrapy.Field()
+    user_id = scrapy.Field()
+    content = scrapy.Field()
+    reply_id = scrapy.Field()
+    reply_content = scrapy.Field()
+    like_counts = scrapy.Field()
+
+
+class CommentsUserItem(scrapy.Item):
+    _id = scrapy.Field()
+    screen_name = scrapy.Field()
+    profile_image_url = scrapy.Field()
+    verified = scrapy.Field()
+    verified_type = scrapy.Field()
+    profile_url = scrapy.Field()
