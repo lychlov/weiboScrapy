@@ -26,3 +26,15 @@ def get_keywords():
 
 def get_redis():
     return cf.get('redis')
+
+
+def get_mongodb():
+    return cf.get('mongodb')
+
+
+def get_max_page_for_tweets():
+    return cf.get('maxPageForTweets')
+
+
+def get_max_page_for_comments():
+    return cf.get('maxPageForComments')

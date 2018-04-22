@@ -5,6 +5,7 @@ import redis
 import scrapy
 
 from weiboScrapy.items import CommentItem, UserItem, CommentsUserItem
+from weiboScrapy.utils.ItemParse import comment_parse, comment_user_parse
 from weiboScrapy.utils.time_transfor import time_trans
 
 
@@ -36,28 +37,10 @@ class CommentsSpider(scrapy.Spider):
         if data_json['ok'] == 0:
             return
         for data in data_json['data']['data']:
-            comment_item = CommentItem()
-            comment_item['_id'] = data['id']
-            created_at = time_trans(data['created_at'])
-            comment_item['created_at'] = created_at
-            comment_item['source'] = data['source']
-            comment_item['user_id'] = data['user']['id']
-            comment_item['content'] = data['text']
-            if 'reply_id' in data:
-                comment_item['reply_id'] = data['reply_id']
-                comment_item['reply_content'] = data['reply_text']
-            comment_item['like_counts'] = data['like_counts']
+            comment_item = comment_parse(data)
             yield comment_item
-            user_item = CommentsUserItem()
             usr_info = data['user']
-            user_item['_id'] = usr_info['id']
-            user_item['screen_name'] = usr_info['screen_name']
-            user_item['profile_image_url'] = usr_info['profile_image_url']
-            user_item['profile_url'] = usr_info['profile_url']
-            user_item['verified'] = usr_info['verified']
-            user_item['verified_type'] = usr_info['verified_type']
-            if 'verified_reason' in user_item:
-                user_item['verified_reason'] = usr_info['verified_reason']
+            user_item = comment_user_parse(usr_info)
             yield user_item
         target_url = response.url
         if target_url.find('&page=') >= 0:

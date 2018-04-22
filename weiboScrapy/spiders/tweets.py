@@ -7,6 +7,7 @@ import scrapy
 from weiboScrapy.config import get_weibo_id_for_tweets, get_keywords
 from weiboScrapy.items import TweetItem, UserItem
 from weiboScrapy.login import spider_login
+from weiboScrapy.utils.ItemParse import tweet_parse, user_parse
 from weiboScrapy.utils.time_transfor import time_trans
 
 
@@ -87,68 +88,11 @@ class TweetsSpider(scrapy.Spider):
             if cards['card_type'] == 11 and cards['show_type'] == 1:
                 print('发现微博组')
                 for card in cards['card_group']:
-                    try:
-                        # 微博信息
-                        tweet_item = TweetItem()
-                        # tweet_item['type'] = 'tweet'
-                        tweet_item['_id'] = card['mblog']['id']
-                        created_at = time_trans(card['mblog']['created_at'])
-                        tweet_item['created_at'] = created_at
-                        tweet_item['crawl_type'] = self.name
-                        content = ''
-                        if not card['mblog']['isLongText']:
-                            content = card['mblog']['text']
-                        else:
-                            content = card['mblog']['longText']['longTextContent']
-                        tweet_item['content'] = content
-                        tweet_item['reposts_count'] = card['mblog']['reposts_count']
-                        tweet_item['comments_count'] = card['mblog']['comments_count']
-                        tweet_item['attitudes_count'] = card['mblog']['attitudes_count']
-                        tweet_item['user_id'] = card['mblog']['user']['id']
-                        tweet_item['source'] = card['mblog']['source']
-                        if 'pics' in card['mblog']:
-                            tweet_item['pics'] = card['mblog']['pics']
-                        tags = ''
-                        for key_word in self.keywords:
-                            word_list = key_word['word'].split('+')
-                            for word in word_list:
-                                if content.find(word) >= 0:
-                                    tags = tags + word + ";"
-                        tweet_item['tags'] = tags
-                        if 'retweeted_status' in card['mblog']:
-                            tweet_item['retweeted_tweetid'] = card['mblog']['retweeted_status']['id']
-                            retweeted_content = ""
-                            if not card['mblog']['retweeted_status']['isLongText']:
-                                retweeted_content = card['mblog']['retweeted_status']['text']
-                            else:
-                                retweeted_content = card['mblog']['retweeted_status']['longText']['longTextContent']
-                                tweet_item['retweeted_content'] = retweeted_content
-                        print("返回了tweet_item")
-                        yield tweet_item
-                        # 用户信息
-                        user_item = UserItem()
-                        usr_info = card['mblog']['user']
-                        # tweet_item['type'] = 'user'
-                        user_item['_id'] = usr_info['id']
-                        user_item['screen_name'] = usr_info['screen_name']
-                        user_item['profile_image_url'] = usr_info['profile_image_url']
-                        user_item['profile_url'] = usr_info['profile_url']
-                        user_item['statuses_count'] = usr_info['statuses_count']
-                        user_item['verified'] = usr_info['verified']
-                        user_item['verified_type'] = usr_info['verified_type']
-                        if 'verified_reason' in user_item:
-                            user_item['verified_reason'] = usr_info['verified_reason']
-                        user_item['description'] = usr_info['description']
-                        user_item['gender'] = usr_info['gender']
-                        user_item['followers_count'] = usr_info['followers_count']
-                        user_item['follow_count'] = usr_info['follow_count']
-                        yield user_item
-                    except Exception as e:
-                        print('-' * 10)
-                        print('发生了异常')
-                        print(e)
-                        print('-' * 10)
-
+                    tweet_item = tweet_parse(card,self.name,self.keywords)
+                    yield tweet_item
+                    usr_info = card['mblog']['user']
+                    user_item = user_parse(usr_info)
+                    yield user_item
         # 生成下一页连接
         target_url = response.url
         if target_url.find('&page=') >= 0:

@@ -11,6 +11,8 @@ import pymongo
 #         return item
 import redis
 
+from weiboScrapy.config import get_mongodb
+
 
 class TweetMongoPipeline(object):
     collection_name = 'tweets'
@@ -21,9 +23,12 @@ class TweetMongoPipeline(object):
 
     @classmethod
     def from_crawler(cls, crawler):
+        mongodb = get_mongodb()
         return cls(
-            mongo_uri=crawler.settings.get('MONGO_URI'),
-            mongo_db=crawler.settings.get('MONGO_DATABASE', 'items')
+            mongo_uri=mongodb['MONGO_URI'],
+            mongo_db=mongodb['MONGO_DATABASE']
+            # mongo_uri=crawler.settings.get('MONGO_URI'),
+            # mongo_db=crawler.settings.get('MONGO_DATABASE', 'items')
         )
 
     def open_spider(self, spider):
@@ -35,7 +40,7 @@ class TweetMongoPipeline(object):
 
     def process_item(self, item, spider):
         # 在名为tweets的Collection中存储微博内容信息
-        if spider.name == 'tweets':
+        if spider.name == 'tweets' or spider.name == 'tweets_in_userid':
             if 'screen_name' not in item:
                 # print('-' * 10)
                 # print(item)
