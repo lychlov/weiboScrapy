@@ -126,5 +126,5 @@ class UserAgentDownloaderMiddleware(object):
 
 class ProxyDownloaderMiddleware(object):
     def process_request(self, request, spider):
-        proxy = "http://" + random.choice(proies)
+        proxy = "https://" + random.choice(proies)
         request.meta['proxy'] = proxy
