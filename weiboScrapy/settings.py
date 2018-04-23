@@ -18,7 +18,7 @@ MONGO_URI = 'mongodb://czk:czk10101@127.0.0.1/test'
 MONGO_DATABASE = 'test'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0'
+# USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -57,6 +57,7 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
     'weiboScrapy.middlewares.UserAgentDownloaderMiddleware': 543,
     'weiboScrapy.middlewares.WeiboscrapyDownloaderMiddleware': 143,
+    'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
 
 }
 

@@ -12,6 +12,7 @@ import logging
 from scrapy.exceptions import CloseSpider
 
 from weiboScrapy.config.user_agents import agents
+from weiboScrapy.config.proxies import proies
 
 from scrapy import signals
 
@@ -121,3 +122,9 @@ class UserAgentDownloaderMiddleware(object):
     def process_request(self, request, spider):
         agent = random.choice(agents)
         request.headers["User-Agent"] = agent
+
+
+class ProxyDownloaderMiddleware(object):
+    def process_request(self, request, spider):
+        proxy = "http://" + random.choice(proies)
+        request.meta['proxy'] = proxy
