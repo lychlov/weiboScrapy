@@ -3,55 +3,58 @@ from weiboScrapy.items import TweetItem, UserItem, CommentItem, CommentsUserItem
 from weiboScrapy.utils.time_transfor import time_trans
 
 
-def tweet_parse(card, name, keywords):
-    item = TweetItem()
+def tweet_parse(blog, name, keywords):
     try:
+        # print('-'*10)
+        # print(blog)
+        # print('-'*10)
         # 微博信息
         tweet_item = TweetItem()
         # tweet_item['type'] = 'tweet'
-        tweet_item['_id'] = card['mblog']['id']
-        created_at = time_trans(card['mblog']['created_at'])
+        tweet_item['_id'] = blog['id']
+        created_at = time_trans(blog['created_at'])
         tweet_item['created_at'] = created_at
         tweet_item['crawl_type'] = name
         content = ''
-        if not card['mblog']['isLongText']:
-            content = card['mblog']['text']
+        if not blog['isLongText']:
+            content = blog['text']
         else:
-            content = card['mblog']['longText']['longTextContent']
+            content = blog['longText']['longTextContent']
         tweet_item['content'] = content
-        tweet_item['reposts_count'] = card['mblog']['reposts_count']
-        tweet_item['comments_count'] = card['mblog']['comments_count']
-        tweet_item['attitudes_count'] = card['mblog']['attitudes_count']
-        tweet_item['user_id'] = card['mblog']['user']['id']
-        tweet_item['source'] = card['mblog']['source']
-        if 'pics' in card['mblog']:
-            tweet_item['pics'] = card['mblog']['pics']
-        tags = ''
+        tweet_item['reposts_count'] = blog['reposts_count']
+        tweet_item['comments_count'] = blog['comments_count']
+        tweet_item['attitudes_count'] = blog['attitudes_count']
+        tweet_item['user_id'] = blog['user']['id']
+        tweet_item['source'] = blog['source']
+        if 'pics' in blog:
+            tweet_item['pics'] = blog['pics']
+        tags = str('')
         for key_word in keywords:
             word_list = key_word['word'].split('+')
             for word in word_list:
                 if content.find(word) >= 0:
-                    if not tags.find(word):
+                    if tags.find(word) < 0:
                         tags = tags + word + ";"
         tweet_item['tags'] = tags
-        if 'retweeted_status' in card['mblog']:
-            tweet_item['retweeted_tweetid'] = card['mblog']['retweeted_status']['id']
+        if 'retweeted_status' in blog:
+            tweet_item['retweeted_tweetid'] = blog['retweeted_status']['id']
             retweeted_content = ""
-            if not card['mblog']['retweeted_status']['isLongText']:
-                retweeted_content = card['mblog']['retweeted_status']['text']
+            if not blog['retweeted_status']['isLongText']:
+                retweeted_content = blog['retweeted_status']['text']
             else:
-                retweeted_content = card['mblog']['retweeted_status']['longText']['longTextContent']
+                retweeted_content = blog['retweeted_status']['longText']['longTextContent']
                 tweet_item['retweeted_content'] = retweeted_content
-        print("返回了tweet_item")
-        yield tweet_item
+        # print("返回了tweet_item")
+        return tweet_item
     except Exception as e:
+        print('-' * 10)
         print(e)
-    return item
+        print('-' * 10)
 
 
 def user_parse(usr_info):
-    user_item = UserItem()
     try:
+        user_item = UserItem()
         # tweet_item['type'] = 'user'
         user_item['_id'] = usr_info['id']
         user_item['screen_name'] = usr_info['screen_name']

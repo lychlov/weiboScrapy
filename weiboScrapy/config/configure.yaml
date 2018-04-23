@@ -1,12 +1,12 @@
 # coding:utf-8
 weiboIDForTweets:
     - username: '15678264837'
-      password: poiu11292
-#    - username: 15577724762
-#      password: poiu11292
-#    - username: 15678075354
-#      password: poiu11292
-#
+      password: 'poiu11292'
+#    - username: '15577724762'
+#      password: 'poiu11292'
+#    - username: '15678075354'
+#      password: 'poiu11292'
+
 
 weiboIDForComments:
     - username: '15678265034'
@@ -18,23 +18,28 @@ weiboIDForUserSearch:
 
 
 keywords:
-  - word: '绝地求生+XDD'
-  - word: '绝地求生+呆妹儿'
+#  - word: '绝地求生+XDD'
+#  - word: '绝地求生+呆妹儿'
+#  - word: '王俊凯'
+#  - word: 'TFBOYS+易烊千玺'
+#  - word: '海洛因'
+  - word: '抑郁+亢奋'
+#  - word: '冰毒'
+  - word: '焦虑'
 
 targetID:
-  -userid: '2873725572'
-  -userid: '1038561943'
-
+#  - userid: '2873725572'
+#  - userid: '1038561943'
+  - userid: '1575168515'
 
 #翻页上限：
-maxPageForTweets:
+maxPageForTweets: 10000
 
-maxPageForComments:
+maxPageForComments: 10000
 
-userid:
-
-username:
-
+beforeDate:
+  enable: False
+  date: '2018-04-22 00:00'
 
 redis:
   host: 127.0.0.1

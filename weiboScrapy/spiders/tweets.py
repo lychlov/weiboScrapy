@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 import json
 
+import datetime
+
+import logging
 import redis
 import scrapy
 
 from weiboScrapy.config import get_weibo_id_for_tweets, get_keywords
+from weiboScrapy.config.conf import get_max_page_for_tweets, get_before_date
 from weiboScrapy.items import TweetItem, UserItem
 from weiboScrapy.login import spider_login
 from weiboScrapy.utils.ItemParse import tweet_parse, user_parse
 from weiboScrapy.utils.time_transfor import time_trans
 
+logger = logging.getLogger(__name__)
 
 class TweetsSpider(scrapy.Spider):
     name = 'tweets'
@@ -18,9 +23,11 @@ class TweetsSpider(scrapy.Spider):
     weibo_id = get_weibo_id_for_tweets()
     keywords = get_keywords()
     # max_page = 100
-    max_page = 3
+    max_page = get_max_page_for_tweets()
     cookies = ""
-    url_for_keywords = "https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D1%26q%3D"
+    url_for_keywords = "https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D61%26q%3Dkeyword%26t%3D0"
+    before_date_enable = get_before_date()['enable']
+    before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         # r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
@@ -33,14 +40,14 @@ class TweetsSpider(scrapy.Spider):
         #             self.cookies = r.get(username + '--' + self.name)
         #         else:
         #             return
-        # 似乎无需登录
+        # # 似乎无需登录
         # for id_pair in self.weibo_id:
         #     username = id_pair['username']
         #     password = id_pair['password']
         # self.cookies = spider_login(username, password, self.name)
         for keyword in self.keywords:
-            url_for_keyword = self.url_for_keywords + keyword['word']
-            yield scrapy.Request(url=url_for_keyword,  callback=self.parse)
+            url_for_keyword = self.url_for_keywords.replace('keyword', keyword['word'])
+            yield scrapy.Request(url=url_for_keyword, callback=self.parse)
 
     def parse(self, response):
         """
@@ -82,13 +89,21 @@ class TweetsSpider(scrapy.Spider):
             return
         cards_list = data_json['data']['cards']
         for cards in cards_list:
-            print('进入cards')
-            print(cards['card_type'])
-            print(cards['show_type'])
+            # print('进入cards')
+            # print(cards['card_type'])
+            # print(cards['show_type'])
             if cards['card_type'] == 11 and cards['show_type'] == 1:
-                print('发现微博组')
+                # print('发现微博组')
                 for card in cards['card_group']:
-                    tweet_item = tweet_parse(card,self.name,self.keywords)
+                    mblog = card['mblog']
+                    tweet_item = tweet_parse(mblog, self.name, self.keywords)
+
+                    if self.before_date_enable:
+                        creat_at = datetime.datetime.strptime(tweet_item['created_at'], "%Y-%m-%d %H:%M")
+                        # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
+                        if (creat_at - self.before_date).total_seconds() < 0:
+                            logger.info('挖掘消息超过历史消息门限')
+                            return
                     yield tweet_item
                     usr_info = card['mblog']['user']
                     user_item = user_parse(usr_info)
@@ -103,4 +118,4 @@ class TweetsSpider(scrapy.Spider):
             yield scrapy.Request(url=target_url, callback=self.parse)
         else:
             target_url = target_url + '&page=2'
-            yield scrapy.Request(url=target_url,  callback=self.parse)
+            yield scrapy.Request(url=target_url, callback=self.parse)

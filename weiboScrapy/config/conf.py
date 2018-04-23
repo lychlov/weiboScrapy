@@ -12,6 +12,10 @@ with open(config_path, encoding='utf-8') as f:
 cf = load(cont)
 
 
+def get_target_ids():
+    return cf.get('targetID')
+
+
 def get_weibo_id_for_tweets():
     return cf.get('weiboIDForTweets')
 
@@ -34,6 +38,10 @@ def get_mongodb():
 
 def get_max_page_for_tweets():
     return cf.get('maxPageForTweets')
+
+
+def get_before_date():
+    return cf.get('beforeDate')
 
 
 def get_max_page_for_comments():

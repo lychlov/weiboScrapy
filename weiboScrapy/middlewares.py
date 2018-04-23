@@ -4,10 +4,18 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 import random
+import scrapy
+import logging
+
+from scrapy.exceptions import CloseSpider
+
 from weiboScrapy.config.user_agents import agents
 
 from scrapy import signals
+
+logger = logging.getLogger(__name__)
 
 
 class WeiboscrapySpiderMiddleware(object):
@@ -89,6 +97,10 @@ class WeiboscrapyDownloaderMiddleware(object):
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
+        logger.info(str(response.status) + ":" + response.url)
+        if response.status in [404, 403, 418]:
+            raise CloseSpider('IP-baned')
+            return response
         return response
 
     def process_exception(self, request, exception, spider):
@@ -109,4 +121,3 @@ class UserAgentDownloaderMiddleware(object):
     def process_request(self, request, spider):
         agent = random.choice(agents)
         request.headers["User-Agent"] = agent
-        return request
