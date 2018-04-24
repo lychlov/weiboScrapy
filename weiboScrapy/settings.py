@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 BOT_NAME = 'weiboScrapy'
 # Log_FILE =''
 SPIDER_MODULES = ['weiboScrapy.spiders']

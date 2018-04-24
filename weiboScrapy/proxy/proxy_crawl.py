@@ -2,10 +2,12 @@
 import os
 import random
 
+import logging
 import redis
 import requests
 from lxml import etree
 
+logger = logging.getLogger(__name__)
 
 class ProxyCrawl:
     def __init__(self):
@@ -36,15 +38,16 @@ class ProxyCrawl:
             try:
                 res = requests.get(url='https://httpbin.org/ip', proxies={'https': ip + ":" + port}, timeout=2).json()
                 self.r.set('proxy-' + str(num - 1), proxy_string, ex=600)
+                logger.info("发现可用代理：" + proxy_string)
             except Exception as e:
-                print("代理不可用：" + proxy_string)
+                pass
                 # print(res)
 
     def get_one_proxy(self):
         proxy_list = self.r.scan(cursor=0, match='proxy-*', count=100)[1]
         if len(proxy_list) == 0:
             self.load_page()
-            self.get_one_proxy()
+            return self.get_one_proxy()
         key = random.choice(proxy_list)
         ip_string = {'key': key,
                      'proxy_string': bytes.decode(self.r.get(key))}

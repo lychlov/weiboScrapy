@@ -136,9 +136,10 @@ class ProxyDownloaderMiddleware(object):
     def process_request(self, request, spider):
         # 每150次请求换一个代理
         # proxy = self.proxy_crawl.get_one_proxy()
-        print(self.proxy_json['proxy_string'])
+        # print(self.proxy_json['proxy_string'])
         request.meta['proxy'] = self.proxy_json['proxy_string']
         self.count = self.count + 1
         if self.count > 150:
-            self.proxy_string = self.proxy_crawl.get_one_proxy()
+            self.proxy_crawl.delete_one_proxy(self.proxy_json['key'])
+            self.proxy_json = self.proxy_crawl.get_one_proxy()
             self.count = 0

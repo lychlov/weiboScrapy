@@ -27,13 +27,17 @@ class TweetsInIDSpider(scrapy.Spider):
 
     def parse(self, response):
         data_json = json.loads(response.body.decode('utf-8'))
+        # print(data_json)
+        if data_json['ok'] == 0:
+            return
         for card in data_json['data']['cards']:
-            blog = card['mblog']
-            tweet_item = tweet_parse(blog, self.name, self.keywords)
-            yield tweet_item
-            usr_info = card['mblog']['user']
-            user_item = user_parse(usr_info)
-            yield user_item
+            if card['card_type'] == 9:
+                blog = card['mblog']
+                tweet_item = tweet_parse(blog, self.name, self.keywords)
+                yield tweet_item
+                usr_info = card['mblog']['user']
+                user_item = user_parse(usr_info)
+                yield user_item
         target_url = response.url
         if target_url.find('&page='):
             current_page = int(target_url.split('&page=')[1]) + 1

@@ -145,5 +145,28 @@ python3 -m scrapy crawl comments
 ```
 #### 自动运行
 ```shell
-python3 runner.py
+
 ```
+### 运行测试
+```yaml
+keywords:
+  - word: '绝地求生+XDD'
+  - word: '绝地求生+呆妹儿'
+  - word: '焦虑'
+  - word: '抑郁+亢奋'
+
+#目标微博ID
+targetID:
+  - userid: '1575168515'
+
+#翻页上限：
+maxPageForTweets: 10000
+maxPageForComments: 10000
+```
+2018-04-24 17:04:54 开始执行
+2018-04-24 17:26:45 完成
+#### 执行结果
+所有请求均为200，没有被ban，没有404,403,418等
+评论：17345条
+微博：2074条
+用户：1456人
