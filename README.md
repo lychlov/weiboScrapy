@@ -21,5 +21,5 @@ https://shimo.im/docs/jzzS9Zp4vS8DL6iq
 - Middleware\middlewares:
     - User-Agent:随机替换请求使用的user-agent
     - Proxy:随机替换请求使用的IP代理
-- 任务调度\scheduler:
+- 任务调度\scheduler:提供调度运行
 
