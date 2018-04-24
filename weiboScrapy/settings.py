@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 BOT_NAME = 'weiboScrapy'
 # Log_FILE =''
 SPIDER_MODULES = ['weiboScrapy.spiders']
@@ -24,12 +24,12 @@ MONGO_DATABASE = 'test'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 2
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 2
+DOWNLOAD_DELAY = 0
 #DOWNLOAD_TIMEOUT=6
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
@@ -58,7 +58,7 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
     'weiboScrapy.middlewares.UserAgentDownloaderMiddleware': 543,
     'weiboScrapy.middlewares.WeiboscrapyDownloaderMiddleware': 143,
-    #'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
+    'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
 
 }
 
@@ -94,3 +94,4 @@ ITEM_PIPELINES = {
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+RETRY_TIMES = 10

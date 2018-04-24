@@ -34,7 +34,6 @@ targetID:
 
 #翻页上限：
 maxPageForTweets: 10000
-
 maxPageForComments: 10000
 
 beforeDate:

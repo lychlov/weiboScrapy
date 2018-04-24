@@ -9,12 +9,14 @@ import random
 import scrapy
 import logging
 
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.exceptions import CloseSpider
 
 from weiboScrapy.config.user_agents import agents
-from weiboScrapy.config.proxies import proies
 
 from scrapy import signals
+
+from weiboScrapy.proxy.proxy_crawl import ProxyCrawl
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +127,18 @@ class UserAgentDownloaderMiddleware(object):
 
 
 class ProxyDownloaderMiddleware(object):
+    def __init__(self):
+        self.proxy_crawl = ProxyCrawl()
+        # self.proxy_crawl.load_page()
+        self.count = 0
+        self.proxy_json = self.proxy_crawl.get_one_proxy()
+
     def process_request(self, request, spider):
-        proxy = "https://" + random.choice(proies)
-        request.meta['proxy'] = proxy
+        # 每150次请求换一个代理
+        # proxy = self.proxy_crawl.get_one_proxy()
+        print(self.proxy_json['proxy_string'])
+        request.meta['proxy'] = self.proxy_json['proxy_string']
+        self.count = self.count + 1
+        if self.count > 150:
+            self.proxy_string = self.proxy_crawl.get_one_proxy()
+            self.count = 0

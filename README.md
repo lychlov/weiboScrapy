@@ -6,8 +6,12 @@ https://shimo.im/docs/jzzS9Zp4vS8DL6iq
 - 将爬取结果保存到MongoDB
 - 爬虫可持续运行，增量爬取内容
 ## 主要模块
-- 模拟登录\login：微博账号模拟登录，维护账号登录状态和cookie
-- IP代理\proxy:
+- 模拟登录\login：
+    - 微博账号模拟登录，维护账号登录状态和cookie。（根据目前测试，登录与否不影响爬取效果）
+    - 需手工输入验证码，可接入yundaima实现自动识别。
+- IP代理\proxy：爬取免费代理（如：[西刺代理](http://www.xicidaili.com/wn/)),并维护代理池。
+    - 每次爬取前自动运行，抓取代理并验证代理可用性。
+    - 每个代理的有效期限为10min
 - 爬虫\spiders:
     - tweets：根据关键词爬取微博博文和博主信息。
     - tweets_to_id：根据目标微博ID爬取微博博文和博主信息。
@@ -20,6 +24,10 @@ https://shimo.im/docs/jzzS9Zp4vS8DL6iq
 - Pipeline\pipelines:将爬取信息存入MongoDB
 - Middleware\middlewares:
     - User-Agent:随机替换请求使用的user-agent
-    - Proxy:随机替换请求使用的IP代理
+    - Proxy:每执行150次请求替换当前使用的IP代理
 - 任务调度\scheduler:提供调度运行
+## 配置文件
+'''java
+String = 水电费
+'''
 

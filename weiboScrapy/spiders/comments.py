@@ -22,14 +22,14 @@ class CommentsSpider(scrapy.Spider):
     def start_requests(self):
         r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
         while True:
-            for key in r.scan_iter():
+            for key in r.scan_iter(match='tweet:*'):
                 if str(key).find('tweet') >= 0:
                     tweet_id = r.get(key)
                     r.delete(key)
                     # print(tweet_id.decode(encoding='utf-8'))
                     target_url = self.url_for_comments + tweet_id.decode(encoding='utf-8') + "&page=1"
                     yield scrapy.Request(url=target_url, callback=self.parse)
-            if not bool(r.scan()[0]):
+            if not bool(r.scan(match='tweet:*')[0]):
                 break
 
     def parse(self, response):

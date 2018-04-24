@@ -22,6 +22,7 @@ class TweetMongoPipeline(object):
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
+        self.r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -48,12 +49,11 @@ class TweetMongoPipeline(object):
                 try:
                     self.db[self.collection_name].insert_one(dict(item))
                     # 存入redis
-                    r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
-                    r.set('tweet:' + item['_id'], str(item['_id']))
+                    self.r.set('tweet:' + item['_id'], str(item['_id']))
                     return item
                 except Exception as e:
                     logger.info('微博入库失败,ID:' + str(item['_id']))
-                    logger.info(e)
+            # logger.info(e)
             # 在名为users的Collection中存储用户信息
             if 'screen_name' in item:
                 self.collection_name = 'users'
@@ -61,7 +61,7 @@ class TweetMongoPipeline(object):
                     self.db[self.collection_name].insert_one(dict(item))
                 except Exception as e:
                     logger.info('博主入库失败,ID:' + str(item['_id']))
-                    logger.info(e)
+                # logger.info(e)
                 return item
 
         if spider.name == 'comments':
@@ -72,12 +72,12 @@ class TweetMongoPipeline(object):
                     return item
                 except Exception as e:
                     logger.info('评论入库失败,ID:' + str(item['_id']))
-                    logger.info(e)
+                    # logger.info(e)
             if 'screen_name' in item:
                 self.collection_name = 'comments_users'
                 try:
                     self.db[self.collection_name].insert_one(dict(item))
                 except Exception as e:
-                    logger.info('评论人入库失败,ID:'+str(item['_id']))
-                    logger.info(e)
+                    logger.info('评论人入库失败,ID:' + str(item['_id']))
+                    # logger.info(e)
                 return item
