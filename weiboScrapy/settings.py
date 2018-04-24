@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 BOT_NAME = 'weiboScrapy'
 # Log_FILE =''
 SPIDER_MODULES = ['weiboScrapy.spiders']
@@ -30,7 +30,7 @@ CONCURRENT_REQUESTS = 16
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0
-#DOWNLOAD_TIMEOUT=6
+DOWNLOAD_TIMEOUT = 6
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
