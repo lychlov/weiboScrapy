@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 import json
 
+import datetime
+
+import logging
 import scrapy
 
 from weiboScrapy.config import get_target_ids, get_keywords
-from weiboScrapy.config.conf import get_max_page_for_tweets
+from weiboScrapy.config.conf import get_max_page_for_tweets, get_before_date
 from weiboScrapy.items import TweetItem
 from weiboScrapy.utils.ItemParse import tweet_parse, user_parse
 from weiboScrapy.utils.time_transfor import time_trans
+
+logger = logging.getLogger(__name__)
 
 
 class TweetsInIDSpider(scrapy.Spider):
@@ -17,6 +22,8 @@ class TweetsInIDSpider(scrapy.Spider):
     keywords = get_keywords()
     target_ids = get_target_ids()
     max_page = get_max_page_for_tweets()
+    before_date_enable = get_before_date()['enable']
+    before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         for id_dict in self.target_ids:
@@ -34,6 +41,12 @@ class TweetsInIDSpider(scrapy.Spider):
             if card['card_type'] == 9:
                 blog = card['mblog']
                 tweet_item = tweet_parse(blog, self.name, self.keywords)
+                if self.before_date_enable:
+                    creat_at = datetime.datetime.strptime(tweet_item['created_at'], "%Y-%m-%d %H:%M")
+                    # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
+                    if (creat_at - self.before_date).total_seconds() < 0:
+                        logger.info('挖掘消息超过历史消息门限')
+                        return
                 yield tweet_item
                 usr_info = card['mblog']['user']
                 user_item = user_parse(usr_info)

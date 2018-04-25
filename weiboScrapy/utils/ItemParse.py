@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from weiboScrapy.items import TweetItem, UserItem, CommentItem, CommentsUserItem
 from weiboScrapy.utils.time_transfor import time_trans
+
+logger = logging.getLogger(__name__)
 
 
 def tweet_parse(blog, name, keywords):
@@ -16,10 +20,15 @@ def tweet_parse(blog, name, keywords):
         tweet_item['created_at'] = created_at
         tweet_item['crawl_type'] = name
         content = ''
+        # print(not blog['isLongText'])
+        # print('longText' not in blog)
         if not blog['isLongText']:
             content = blog['text']
         else:
-            content = blog['longText']['longTextContent']
+            if 'longText' in blog:
+                content = blog['longText']['longTextContent']
+            else:
+                content = blog['text']
         tweet_item['content'] = content
         tweet_item['reposts_count'] = blog['reposts_count']
         tweet_item['comments_count'] = blog['comments_count']
@@ -47,9 +56,8 @@ def tweet_parse(blog, name, keywords):
         # print("返回了tweet_item")
         return tweet_item
     except Exception as e:
-        print('-' * 10)
-        print(e)
-        print('-' * 10)
+        logger.error('生成tweet发生错误：')
+        logger.error(e)
 
 
 def user_parse(usr_info):
@@ -71,7 +79,8 @@ def user_parse(usr_info):
         user_item['follow_count'] = usr_info['follow_count']
         return user_item
     except Exception as e:
-        print(e)
+        logger.error('生成博主发生错误：')
+        logger.error(e)
 
 
 def comment_parse(data):
@@ -89,7 +98,8 @@ def comment_parse(data):
         comment_item['like_counts'] = data['like_counts']
         return comment_item
     except Exception as e:
-        print(e)
+        logger.error('生成评论发生错误：')
+        logger.error(e)
 
 
 def comment_user_parse(usr_info):
@@ -105,4 +115,5 @@ def comment_user_parse(usr_info):
             user_item['verified_reason'] = usr_info['verified_reason']
         return user_item
     except Exception as e:
-        print(e)
+        logger.error('生成评论用户发生错误：')
+        logger.error(e)

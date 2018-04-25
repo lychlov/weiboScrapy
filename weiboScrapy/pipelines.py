@@ -60,7 +60,8 @@ class TweetMongoPipeline(object):
                 try:
                     self.db[self.collection_name].insert_one(dict(item))
                 except Exception as e:
-                    logger.info('博主入库失败,ID:' + str(item['_id']))
+                    pass
+                    # logger.info('博主入库失败,ID:' + str(item['_id']))
                 # logger.info(e)
                 return item
 

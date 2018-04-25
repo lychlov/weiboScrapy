@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 BOT_NAME = 'weiboScrapy'
 # Log_FILE =''
 SPIDER_MODULES = ['weiboScrapy.spiders']
@@ -57,7 +57,7 @@ COOKIES_ENABLED = False
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'weiboScrapy.middlewares.UserAgentDownloaderMiddleware': 543,
-    'weiboScrapy.middlewares.WeiboscrapyDownloaderMiddleware': 143,
+    # 'weiboScrapy.middlewares.WeiboscrapyDownloaderMiddleware': 143,
     'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
 
 }

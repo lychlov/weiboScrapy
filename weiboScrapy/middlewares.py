@@ -100,10 +100,7 @@ class WeiboscrapyDownloaderMiddleware(object):
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
-        logger.info(str(response.status) + ":" + response.url)
-        if response.status in [404, 403, 418]:
-            raise CloseSpider('IP-baned')
-            return response
+
         return response
 
     def process_exception(self, request, exception, spider):
@@ -132,6 +129,17 @@ class ProxyDownloaderMiddleware(object):
         # self.proxy_crawl.load_page()
         self.count = 0
         self.proxy_json = self.proxy_crawl.get_one_proxy()
+
+    def process_response(self, request, response, spider):
+        logger.info(str(response.status) + ":" + response.url)
+        if response.status in [404, 403, 418]:
+            logger.info(str(response.status) + ":" + response.url)
+            # raise CloseSpider('IP-baned')
+            self.proxy_crawl.delete_one_proxy(self.proxy_json['key'])
+            self.proxy_json = self.proxy_crawl.get_one_proxy()
+            self.count = 0
+            return None
+        return response
 
     def process_request(self, request, spider):
         # 每150次请求换一个代理
