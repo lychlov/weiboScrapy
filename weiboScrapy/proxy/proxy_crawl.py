@@ -6,13 +6,21 @@ import logging
 import redis
 import requests
 from lxml import etree
+import dotenv
+from getenv import env
 
+dotenv.read_dotenv('weiboScrapy/.env')
+
+SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
+SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
+SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
 logger = logging.getLogger(__name__)
 
 class ProxyCrawl:
     def __init__(self):
         self.url = 'http://www.xicidaili.com/wn/'
-        self.r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+        self.r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, db=0)
 
     def load_page(self):
         headers = {

@@ -6,14 +6,22 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import logging
-# class WeiboscrapyPipeline(object):
-#     def process_item(self, item, spider):
-#         return item
 import redis
 
-from weiboScrapy.config import get_mongodb
+#         return item
+
+
 
 logger = logging.getLogger(__name__)
+import dotenv
+from getenv import env
+
+dotenv.read_dotenv()
+
+SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
+SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
+SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
 
 
 class TweetMongoPipeline(object):
@@ -22,14 +30,13 @@ class TweetMongoPipeline(object):
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
-        self.r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+        self.r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, db=0)
 
     @classmethod
     def from_crawler(cls, crawler):
-        mongodb = get_mongodb()
         return cls(
-            mongo_uri=mongodb['MONGO_URI'],
-            mongo_db=mongodb['MONGO_DATABASE']
+            mongo_uri=SI_MONGODB_CRAWLER_HOST,
+            mongo_db=SI_MONGODB_CRAWLER_DB
             # mongo_uri=crawler.settings.get('MONGO_URI'),
             # mongo_db=crawler.settings.get('MONGO_DATABASE', 'items')
         )

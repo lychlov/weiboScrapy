@@ -12,7 +12,15 @@ from weiboScrapy.config.conf import get_max_page_for_comments, get_before_date
 from weiboScrapy.items import CommentItem, UserItem, CommentsUserItem
 from weiboScrapy.utils.ItemParse import comment_parse, comment_user_parse
 from weiboScrapy.utils.time_transfor import time_trans
+import dotenv
+from getenv import env
 
+dotenv.read_dotenv('weiboScrapy/.env')
+
+SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
+SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
+SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
 logger = logging.getLogger(__name__)
 
 class CommentsSpider(scrapy.Spider):
@@ -27,7 +35,7 @@ class CommentsSpider(scrapy.Spider):
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
     def start_requests(self):
-        r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, db=0)
         while True:
             for key in r.scan_iter(match='tweet:*'):
                 if str(key).find('tweet') >= 0:

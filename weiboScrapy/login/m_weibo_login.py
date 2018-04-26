@@ -19,7 +19,15 @@ from urllib.parse import quote_plus
 import http.cookiejar as cookielib
 
 from weiboScrapy.config import get_weibo_id_for_tweets
+import dotenv
+from getenv import env
 
+dotenv.read_dotenv('weiboScrapy/.env')
+
+SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
+SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
+SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
 """
 整体的思路是，
 1. 先登录到 weibo.com，
@@ -240,7 +248,7 @@ class WeiboLogin(object):
         # with open(self.cookie_path, "r") as f:
         #     cookie_str = f.read()
         cookie_str = self.get_cookies_from_txt()
-        r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, db=0)
         #     # print(cookie_str)
         r.set('cookie:'+self.user + "--" + spidername, cookie_str)
 
