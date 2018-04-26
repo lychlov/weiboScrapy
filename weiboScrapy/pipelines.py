@@ -7,13 +7,13 @@
 import pymongo
 import logging
 import redis
-
+import dotenv
+from getenv import env
 #         return item
 
 
 logger = logging.getLogger(__name__)
-import dotenv
-from getenv import env
+
 
 dotenv.read_dotenv()
 
