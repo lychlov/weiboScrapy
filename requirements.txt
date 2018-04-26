@@ -6,6 +6,6 @@ scrapy
 PyYAML
 pymongo
 rsa
-PIL
+Pillow
 requests
 redis
