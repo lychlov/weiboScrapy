@@ -17,7 +17,7 @@ from getenv import env
 
 dotenv.read_dotenv('weiboScrapy/.env')
 
-SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_PORT", "redis://127.0.0.1:6379/0")
+SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_URL", "redis://127.0.0.1:6379/0")
 logger = logging.getLogger(__name__)
 
 
