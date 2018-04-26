@@ -30,8 +30,8 @@ targetID:
 #  - userid: '1038561943'
 
 #翻页上限：
-maxPageForTweets: 10000
-maxPageForComments: 10000
+maxPageForTweets: 1000
+maxPageForComments: 1000
 
 #当enable为True时，仅爬取date值之前的信息。
 beforeDate:

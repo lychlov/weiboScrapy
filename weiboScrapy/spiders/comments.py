@@ -47,8 +47,8 @@ class CommentsSpider(scrapy.Spider):
                     # print(tweet_id.decode(encoding='utf-8'))
                     target_url = self.url_for_comments + tweet_id.decode(encoding='utf-8') + "&page=1"
                     yield scrapy.Request(url=target_url, callback=self.parse)
-                    if not bool(r.scan(match='tweet:*')[0]):
-                        break
+            if len(r.scan(match='tweet:*')[1]) == 0:
+                break
 
     def parse(self, response):
         # print(response.status)

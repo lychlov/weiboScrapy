@@ -154,7 +154,7 @@ python3 -m scrapy crawl comments
 ```
 #### 自动运行
 ```shell
-
+python3 ./runner.py
 ```
 ### 运行测试
 ```yaml
@@ -179,3 +179,4 @@ maxPageForComments: 10000
 评论：17345条
 微博：2074条
 用户：1456人
+

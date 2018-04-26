@@ -9,13 +9,10 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 LOG_LEVEL = 'INFO'
+Log_FILE = 'scrapy.log'
 BOT_NAME = 'weiboScrapy'
-# Log_FILE =''
 SPIDER_MODULES = ['weiboScrapy.spiders']
 NEWSPIDER_MODULE = 'weiboScrapy.spiders'
-
-MONGO_URI = 'mongodb://czk:czk10101@127.0.0.1/test'
-MONGO_DATABASE = 'test'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0'

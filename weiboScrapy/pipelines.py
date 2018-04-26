@@ -62,7 +62,7 @@ class TweetMongoPipeline(object):
                     return item
                 except Exception as e:
                     logger.info('微博入库失败,ID:' + str(item['_id']))
-            # logger.info(e)
+                    logger.info(e)
             # 在名为users的Collection中存储用户信息
             if 'screen_name' in item:
                 self.collection_name = 'users'
