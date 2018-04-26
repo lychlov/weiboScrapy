@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
 
-f = open('/home/docker/work_space/weiboScrapy/json.txt', 'r')
-string = f.read()
-data_json = json.loads(string)
-if data_json['ok'] == 0:
-    print("没了")
+import dotenv
+import pymongo
+from getenv import env
+
+dotenv.read_dotenv('weiboScrapy/.env')
+
+SI_MONGODB_CRAWLER_URL = env("SI_MONGODB_CRAWLER_URL", "mongodb://user:pass@127.0.0.1:27017/crawler")
+client = pymongo.MongoClient(SI_MONGODB_CRAWLER_URL)
+db = client.get_database()
+print(db.name)

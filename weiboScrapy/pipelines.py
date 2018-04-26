@@ -38,7 +38,7 @@ class TweetMongoPipeline(object):
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
-        self.db = self.client.get_default_database()
+        self.db = self.client.get_database()
 
     def close_spider(self, spider):
         self.client.close()
