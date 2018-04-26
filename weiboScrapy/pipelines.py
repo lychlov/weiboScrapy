@@ -11,41 +11,34 @@ import redis
 #         return item
 
 
-
 logger = logging.getLogger(__name__)
 import dotenv
 from getenv import env
 
 dotenv.read_dotenv()
 
-SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
-SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
-SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
-SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
-SI_REDIS_CRAWLER_PASS = env("SI_REDIS_CRAWLER_PASS", None)
+SI_MONGODB_CRAWLER_URL = env("SI_MONGODB_CRAWLER_URL", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_URL", "redis://127.0.0.1:6379/0")
 
 
 class TweetMongoPipeline(object):
     collection_name = 'tweets'
 
-    def __init__(self, mongo_uri, mongo_db):
+    def __init__(self, mongo_uri):
         self.mongo_uri = mongo_uri
-        self.mongo_db = mongo_db
-        self.r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, password=SI_REDIS_CRAWLER_PASS,
-                                   port=SI_REDIS_CRAWLER_PORT, db=0)
+        self.r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongo_uri=SI_MONGODB_CRAWLER_HOST,
-            mongo_db=SI_MONGODB_CRAWLER_DB
+            mongo_uri=SI_MONGODB_CRAWLER_URL,
             # mongo_uri=crawler.settings.get('MONGO_URI'),
             # mongo_db=crawler.settings.get('MONGO_DATABASE', 'items')
         )
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
-        self.db = self.client[self.mongo_db]
+        self.db = self.client.get_default_database()
 
     def close_spider(self, spider):
         self.client.close()

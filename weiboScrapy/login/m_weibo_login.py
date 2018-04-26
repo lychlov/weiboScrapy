@@ -23,12 +23,8 @@ import dotenv
 from getenv import env
 
 dotenv.read_dotenv('weiboScrapy/.env')
-
-SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
-SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
-SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
-SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
-SI_REDIS_CRAWLER_PASS = env("SI_REDIS_CRAWLER_PASS", None)
+SI_MONGODB_CRAWLER_URL = env("SI_MONGODB_CRAWLER_URL", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_URL", "redis://127.0.0.1:6379/0")
 
 """
 整体的思路是，
@@ -250,8 +246,7 @@ class WeiboLogin(object):
         # with open(self.cookie_path, "r") as f:
         #     cookie_str = f.read()
         cookie_str = self.get_cookies_from_txt()
-        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, password=SI_REDIS_CRAWLER_PASS,
-                              port=SI_REDIS_CRAWLER_PORT, db=0)
+        r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
         #     # print(cookie_str)
         r.set('cookie:' + self.user + "--" + spidername, cookie_str)
 

@@ -17,11 +17,7 @@ from getenv import env
 
 dotenv.read_dotenv('weiboScrapy/.env')
 
-SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017")
-SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
-SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
-SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
-SI_REDIS_CRAWLER_PASS = env("SI_REDIS_CRAWLER_PASS", None)
+SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_PORT", "redis://127.0.0.1:6379/0")
 logger = logging.getLogger(__name__)
 
 
@@ -37,8 +33,7 @@ class CommentsSpider(scrapy.Spider):
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
     def start_requests(self):
-        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, password=SI_REDIS_CRAWLER_PASS,
-                              db=0)
+        r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
         while True:
             for key in r.scan_iter(match='tweet:*'):
                 if str(key).find('tweet') >= 0:
