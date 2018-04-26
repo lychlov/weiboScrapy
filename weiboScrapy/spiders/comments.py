@@ -17,11 +17,13 @@ from getenv import env
 
 dotenv.read_dotenv('weiboScrapy/.env')
 
-SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017/crawler")
+SI_MONGODB_CRAWLER_HOST = env("SI_MONGODB_CRAWLER_HOST", "mongodb://user:pass@127.0.0.1:27017")
 SI_MONGODB_CRAWLER_DB = env("SI_MONGODB_CRAWLER_DB", "test")
 SI_REDIS_CRAWLER_HOST = env("SI_REDIS_CRAWLER_HOST", "127.0.0.1")
 SI_REDIS_CRAWLER_PORT = env("SI_REDIS_CRAWLER_PORT", "6379")
+SI_REDIS_CRAWLER_PASS = env("SI_REDIS_CRAWLER_PASS", None)
 logger = logging.getLogger(__name__)
+
 
 class CommentsSpider(scrapy.Spider):
     name = 'comments'
@@ -35,7 +37,8 @@ class CommentsSpider(scrapy.Spider):
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
     def start_requests(self):
-        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, db=0)
+        r = redis.StrictRedis(host=SI_REDIS_CRAWLER_HOST, port=SI_REDIS_CRAWLER_PORT, password=SI_REDIS_CRAWLER_PASS,
+                              db=0)
         while True:
             for key in r.scan_iter(match='tweet:*'):
                 if str(key).find('tweet') >= 0:
@@ -44,8 +47,8 @@ class CommentsSpider(scrapy.Spider):
                     # print(tweet_id.decode(encoding='utf-8'))
                     target_url = self.url_for_comments + tweet_id.decode(encoding='utf-8') + "&page=1"
                     yield scrapy.Request(url=target_url, callback=self.parse)
-            if not bool(r.scan(match='tweet:*')[0]):
-                break
+                    if not bool(r.scan(match='tweet:*')[0]):
+                        break
 
     def parse(self, response):
         # print(response.status)
