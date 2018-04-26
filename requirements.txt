@@ -1,3 +1,5 @@
+django-getenv
+django-dotenv
 lxml
 selenium
 scrapy
