@@ -133,7 +133,7 @@ beforeDate:
 #### MongoDB和Redis配置
 使用django-dotenv 和 django-getenv管理,在.env文件中。
 ```env
-SI_MONGODB_CRAWLER_URL==mongodb://czk:pass@127.0.0.1/test
+SI_MONGODB_CRAWLER_URL=mongodb://czk:pass@127.0.0.1/test
 SI_REDIS_CRAWLER_URL=redis://:pass@127.0.0.1:6379/0
 ```
 ### 安装

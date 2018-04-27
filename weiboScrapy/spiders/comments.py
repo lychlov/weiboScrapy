@@ -9,16 +9,15 @@ import scrapy
 from scrapy.exceptions import CloseSpider
 
 from weiboScrapy.config.conf import get_max_page_for_comments, get_before_date
+from weiboScrapy.constans import SI_REDIS_CRAWLER_URL
 from weiboScrapy.items import CommentItem, UserItem, CommentsUserItem
 from weiboScrapy.utils.ItemParse import comment_parse, comment_user_parse
 from weiboScrapy.utils.time_transfor import time_trans
 import dotenv
 from getenv import env
 
-dotenv.read_dotenv('weiboScrapy/.env')
-
-SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_URL", "redis://:pass@127.0.0.1:8379/0")
 logger = logging.getLogger(__name__)
+
 
 class CommentsSpider(scrapy.Spider):
     name = 'comments'

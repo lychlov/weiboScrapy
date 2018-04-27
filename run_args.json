@@ -1,0 +1,39 @@
+{
+  "weiboID": [
+    {
+      "username": "15678264837",
+      "password": "poiu11292"
+    },
+    {
+      "username": "15577724762",
+      "password": "poiu11292"
+    },
+    {
+      "username": "15678075354",
+      "password": "poiu11292"
+    },
+    {
+      "username": "15678265034",
+      "password": "poiu11292"
+    },
+    {
+      "username": "18404477785",
+      "password": "poiu11292"
+    }
+  ],
+  "keywords": [
+    "绝地求生+XDD",
+    "绝地求生+呆妹儿",
+    "焦虑",
+    "抑郁+亢奋"
+  ],
+  "targetID": [
+    "1575168515"
+  ],
+  "maxPageForTweets": 1000,
+  "maxPageForComments": 1000,
+  "beforeDate": {
+    "enable": "False",
+    "date": "2018-04-22 00:00"
+  }
+}
