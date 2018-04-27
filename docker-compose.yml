@@ -1,0 +1,20 @@
+version: '2'
+services:
+    crawler:
+        build:
+          context: ./
+          dockerfile: Dockerfile.dev
+        tty: true
+        environment:
+            PYTHONIOENCODING: utf-8
+            SI_MONGODB_CRAWLER_URL: "mongodb://mongodb:27017/crawler-weibo"
+            SI_REDIS_CRAWLER_URL: "redis://redis:6379/0"
+        links:
+            - mongodb
+        volumes:
+            - "./:/work"
+        command: "bash"
+    redis:
+        image: redis:3.2
+    mongodb:
+        image: mongo:3.4.2
