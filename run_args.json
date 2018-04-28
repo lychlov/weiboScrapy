@@ -22,16 +22,26 @@
     }
   ],
   "keywords": [
-    "绝地求生+XDD",
-    "绝地求生+呆妹儿",
-    "焦虑",
-    "抑郁+亢奋"
+    {
+      "word": "绝地求生+XDD"
+    },
+    {
+      "word": "绝地求生+呆妹儿"
+    },
+    {
+      "word": "焦虑"
+    },
+    {
+      "word": "抑郁+亢奋"
+    }
   ],
-  "targetID": [
-    "1575168515"
+  "target_ids": [
+    {
+      "userid": "1575168515"
+    }
   ],
-  "maxPageForTweets": 1000,
-  "maxPageForComments": 1000,
+  "max_page_for_tweets": 1000,
+  "max_page_for_comments": 1000,
   "beforeDate": {
     "enable": "False",
     "date": "2018-04-22 00:00"

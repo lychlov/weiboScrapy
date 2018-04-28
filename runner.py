@@ -13,21 +13,25 @@ from scrapy.utils.project import get_project_settings
 
 logger = logging.getLogger(__name__)
 
-configure_logging()
-runner = CrawlerRunner(get_project_settings())
-
 
 @defer.inlineCallbacks
-def crawl():
-    yield runner.crawl(TweetsSpider)
-    yield runner.crawl(TweetsInIDSpider)
-    yield runner.crawl(CommentsSpider)
+def crawl(run_args):
+    yield runner.crawl(TweetsSpider(run_args))
+    yield runner.crawl(TweetsInIDSpider(run_args))
+    yield runner.crawl(CommentsSpider(run_args))
     reactor.stop()
 
 
 if __name__ == '__main__':
+
+    configure_logging()
+    runner = CrawlerRunner(get_project_settings())
     try:
-        crawl()
+        args = sys.argv[1:]
+        input_file_path = args[0]
+        with open(input_file_path, 'r') as f:
+            input_data = json.load(f)
+        crawl(input_data)
         reactor.run()
     except RuntimeError as e:
         logger.error(e)

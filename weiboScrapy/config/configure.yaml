@@ -38,12 +38,3 @@ beforeDate:
   enable: False
   date: '2018-04-22 00:00'
 
-#redis配置信息
-redis:
-  host: 127.0.0.1
-  port: 6379
-
-#MongoDB配置信息
-mongodb:
-    MONGO_URI: 'mongodb://czk:czk10101@127.0.0.1/test'
-    MONGO_DATABASE: 'test'
