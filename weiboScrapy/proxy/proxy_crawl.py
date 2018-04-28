@@ -18,8 +18,11 @@ class ProxyCrawl:
     def __init__(self):
         self.url = 'http://www.xicidaili.com/wn/'
         self.r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
+        self.count = 0
 
     def load_page(self):
+        logger.warning('开始爬取代理')
+        self.count = 0
         headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36',
         }
@@ -43,10 +46,12 @@ class ProxyCrawl:
             try:
                 res = requests.get(url='https://httpbin.org/ip', proxies={'https': ip + ":" + port}, timeout=2).json()
                 self.r.set('proxy-' + str(num - 1), proxy_string, ex=600)
-                logger.info("发现可用代理：" + proxy_string)
+                # logger.info("发现可用代理：" + proxy_string)
+                self.count = self.count + 1
             except Exception as e:
                 pass
-                # print(res)
+        logger.warning("爬取代理完成：共爬取 %s 个代理...", self.count)
+        # print(res)
 
     def get_one_proxy(self):
         proxy_list = self.r.scan(cursor=0, match='proxy-*', count=100)[1]

@@ -5,7 +5,7 @@ import sys
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
-
+from yaml import load
 from weiboScrapy.spiders.tweets import TweetsSpider
 from weiboScrapy.spiders.tweets_to_id import TweetsInIDSpider
 from weiboScrapy.spiders.comments import CommentsSpider
@@ -30,8 +30,7 @@ if __name__ == '__main__':
         args = sys.argv[1:]
         input_file_path = args[0]
         with open(input_file_path, 'r') as f:
-            input_data = json.load(f)
-        print(input_data)
+            input_data = load(f)
         crawl(run_args=input_data)
         reactor.run()
     except RuntimeError as e:

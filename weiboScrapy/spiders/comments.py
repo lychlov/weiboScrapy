@@ -32,7 +32,7 @@ class CommentsSpider(scrapy.Spider):
 
     def __init__(self, run_args, *args, **kwargs):
         super(CommentsSpider, self).__init__(*args, **kwargs)
-        self.max_page = run_args.get('max_page_for_comments', 100)
+        self.max_page = run_args.get('maxPageForComments', 100)
         self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
         self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date'), "%Y-%m-%d %H:%M")
 
@@ -64,7 +64,7 @@ class CommentsSpider(scrapy.Spider):
                 creat_at = datetime.datetime.strptime(comment_item['created_at'], "%Y-%m-%d %H:%M")
                 # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
                 if (creat_at - self.before_date).total_seconds() < 0:
-                    logger.info('挖掘消息超过历史消息门限')
+                    logger.warning('挖掘消息超过历史消息门限')
                     return
             yield comment_item
             usr_info = data['user']
