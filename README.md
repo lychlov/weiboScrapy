@@ -27,7 +27,7 @@ https://shimo.im/docs/jzzS9Zp4vS8DL6iq
     - Proxy:每执行150次请求替换当前使用的IP代理
 - 爬虫设置\settings:scrapy框架总体设置
 - 任务调度\scheduler:提供调度运行
-## ~~配置文件~~ JSON运行参数
+## 配置文件
 ```json
 {
   "weiboID": [
@@ -173,7 +173,7 @@ pip3 install -r requirements.txt
 ```
 #### 自动运行
 ```shell
-python3 ./runner.py run_args.json
+python3 ./runner.py run_args.yaml
 ```
 ### 运行测试
 ```yaml
