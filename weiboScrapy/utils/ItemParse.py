@@ -56,9 +56,9 @@ def tweet_parse(blog, name, keywords):
         # print("返回了tweet_item")
         return tweet_item
     except Exception as e:
-        logger.error('生成tweet发生错误：')
-        logger.error(e)
-
+        # logger.error('生成tweet发生错误：')
+        # logger.error(e)
+        pass
 
 def user_parse(usr_info):
     try:
