@@ -33,8 +33,8 @@ class CommentsSpider(scrapy.Spider):
     def __init__(self, run_args, *args, **kwargs):
         super(CommentsSpider, self).__init__(*args, **kwargs)
         self.max_page = run_args.get('max_page_for_comments', 100)
-        self.before_date_enable = run_args.get('beforeDate').get('enable')
-        self.before_date = run_args.get('beforeDate').get('date')
+        self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
+        self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date'), "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
@@ -67,9 +67,9 @@ class CommentsSpider(scrapy.Spider):
                     logger.info('挖掘消息超过历史消息门限')
                     return
             yield comment_item
-            # usr_info = data['user']
-            # user_item = comment_user_parse(usr_info)
-            # yield user_item
+            usr_info = data['user']
+            user_item = comment_user_parse(usr_info)
+            yield user_item
         target_url = response.url
         if target_url.find('&page=') >= 0:
             current_page = int(target_url.split('&page=')[1]) + 1

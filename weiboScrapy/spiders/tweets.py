@@ -33,9 +33,9 @@ class TweetsSpider(scrapy.Spider):
     def __init__(self, run_args, *args, **kwargs):
         super(TweetsSpider, self).__init__(*args, **kwargs)
         self.keywords = run_args.get('keywords', [])
-        self.before_date_enable = run_args.get('beforeDate').get('enable', False)
-        self.before_date = run_args.get('beforeDate').get('date')
+        self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
         self.max_page = run_args.get('max_page_for_tweets', 100)
+        self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date'), "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         # r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)

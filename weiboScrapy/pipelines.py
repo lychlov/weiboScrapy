@@ -7,13 +7,12 @@
 import pymongo
 import logging
 import redis
+from weiboScrapy.constans import SI_MONGODB_CRAWLER_URL, SI_REDIS_CRAWLER_URL
 
 #         return item
 
 
 logger = logging.getLogger(__name__)
-
-
 
 
 class TweetMongoPipeline(object):
