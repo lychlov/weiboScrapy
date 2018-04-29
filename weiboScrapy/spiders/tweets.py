@@ -16,6 +16,7 @@ from weiboScrapy.utils.time_transfor import time_trans
 
 logger = logging.getLogger(__name__)
 
+
 class TweetsSpider(scrapy.Spider):
     name = 'tweets'
     allowed_domains = ['weibo.cn']
@@ -28,6 +29,14 @@ class TweetsSpider(scrapy.Spider):
     url_for_keywords = "https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D61%26q%3Dkeyword%26t%3D0"
     before_date_enable = get_before_date()['enable']
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
+
+    def __init__(self, run_args, *args, **kwargs):
+        super(TweetsSpider, self).__init__(*args, **kwargs)
+        self.keywords = run_args.get('keywords', [])
+        self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
+        self.max_page = run_args.get('maxPageForTweets', 100)
+        self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date', '2000-01-01 00:00'),
+                                                      "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         # r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
@@ -45,6 +54,8 @@ class TweetsSpider(scrapy.Spider):
         #     username = id_pair['username']
         #     password = id_pair['password']
         # self.cookies = spider_login(username, password, self.name)
+        if len(self.keywords) == 0:
+            return
         for keyword in self.keywords:
             url_for_keyword = self.url_for_keywords.replace('keyword', keyword['word'])
             yield scrapy.Request(url=url_for_keyword, callback=self.parse)
@@ -102,7 +113,7 @@ class TweetsSpider(scrapy.Spider):
                         creat_at = datetime.datetime.strptime(tweet_item['created_at'], "%Y-%m-%d %H:%M")
                         # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
                         if (creat_at - self.before_date).total_seconds() < 0:
-                            logger.info('挖掘消息超过历史消息门限')
+                            logger.warning('挖掘消息超过历史消息门限')
                             return
                     yield tweet_item
                     usr_info = card['mblog']['user']

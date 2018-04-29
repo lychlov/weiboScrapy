@@ -9,16 +9,15 @@ import scrapy
 from scrapy.exceptions import CloseSpider
 
 from weiboScrapy.config.conf import get_max_page_for_comments, get_before_date
+from weiboScrapy.constans import SI_REDIS_CRAWLER_URL
 from weiboScrapy.items import CommentItem, UserItem, CommentsUserItem
 from weiboScrapy.utils.ItemParse import comment_parse, comment_user_parse
 from weiboScrapy.utils.time_transfor import time_trans
 import dotenv
 from getenv import env
 
-dotenv.read_dotenv('weiboScrapy/.env')
-
-SI_REDIS_CRAWLER_URL = env("SI_REDIS_CRAWLER_URL", "redis://:pass@127.0.0.1:8379/0")
 logger = logging.getLogger(__name__)
+
 
 class CommentsSpider(scrapy.Spider):
     name = 'comments'
@@ -30,6 +29,13 @@ class CommentsSpider(scrapy.Spider):
 
     before_date_enable = get_before_date()['enable']
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
+
+    def __init__(self, run_args, *args, **kwargs):
+        super(CommentsSpider, self).__init__(*args, **kwargs)
+        self.max_page = run_args.get('maxPageForComments', 100)
+        self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
+        self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date', '2000-01-01 00:00'),
+                                                      "%Y-%m-%d %H:%M")
 
     def start_requests(self):
         r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
@@ -59,12 +65,12 @@ class CommentsSpider(scrapy.Spider):
                 creat_at = datetime.datetime.strptime(comment_item['created_at'], "%Y-%m-%d %H:%M")
                 # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
                 if (creat_at - self.before_date).total_seconds() < 0:
-                    logger.info('挖掘消息超过历史消息门限')
+                    logger.warning('挖掘消息超过历史消息门限')
                     return
             yield comment_item
-            # usr_info = data['user']
-            # user_item = comment_user_parse(usr_info)
-            # yield user_item
+            usr_info = data['user']
+            user_item = comment_user_parse(usr_info)
+            yield user_item
         target_url = response.url
         if target_url.find('&page=') >= 0:
             current_page = int(target_url.split('&page=')[1]) + 1

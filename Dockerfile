@@ -18,4 +18,4 @@ RUN pip install -r /work/requirements.txt
 
 WORKDIR /work
 
-CMD ["python", "/work/runner.py"]
+CMD ["python", "/work/runner.py", "run_args.yaml"]

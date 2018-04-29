@@ -131,9 +131,9 @@ class ProxyDownloaderMiddleware(object):
         self.proxy_json = self.proxy_crawl.get_one_proxy()
 
     def process_response(self, request, response, spider):
-        logger.info(str(response.status) + ":" + response.url)
+        # logger.info(str(response.status) + ":" + response.url)
         if response.status in [404, 403, 418]:
-            logger.info(str(response.status) + ":" + response.url)
+            logger.error(str(response.status) + ":" + response.url)
             # raise CloseSpider('IP-baned')
             self.proxy_crawl.delete_one_proxy(self.proxy_json['key'])
             self.proxy_json = self.proxy_crawl.get_one_proxy()

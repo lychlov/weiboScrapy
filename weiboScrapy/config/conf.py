@@ -13,28 +13,28 @@ cf = load(cont)
 
 
 def get_target_ids():
-    return cf.get('targetID')
+    return cf.get('targetID', [])
 
 
 def get_weibo_id_for_tweets():
-    return cf.get('weiboIDForTweets')
+    return cf.get('weiboIDForTweets', [])
 
 
 def get_weibo_id_for_comments():
-    return cf.get('weiboIDForComments')
+    return cf.get('weiboIDForComments', [])
 
 
 def get_keywords():
-    return cf.get('keywords')
+    return cf.get('keywords', [])
 
 
 def get_max_page_for_tweets():
-    return cf.get('maxPageForTweets')
+    return cf.get('maxPageForTweets', 10)
 
 
 def get_before_date():
-    return cf.get('beforeDate')
+    return cf.get('beforeDate', {})
 
 
 def get_max_page_for_comments():
-    return cf.get('maxPageForComments')
+    return cf.get('maxPageForComments', 10)

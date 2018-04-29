@@ -13,7 +13,7 @@ weiboID:
       password: 'poiu11292'
 #关键字
 keywords:
-  - word: '绝地求生+XDD'
+  - word: '天才小熊猫'
   - word: '绝地求生+呆妹儿'
   - word: '焦虑'
   - word: '抑郁+亢奋'
@@ -25,13 +25,13 @@ keywords:
 
 #目标微博ID
 targetID:
-  - userid: '1575168515'
+  - userid: '1841611811'
 #  - userid: '2873725572'
 #  - userid: '1038561943'
 
 #翻页上限：
-maxPageForTweets: 1000
-maxPageForComments: 1000
+maxPageForTweets: 2
+maxPageForComments: 2
 
 #当enable为True时，仅爬取date值之前的信息。
 beforeDate:

@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'WARNING'
 Log_FILE = 'scrapy.log'
 BOT_NAME = 'weiboScrapy'
 SPIDER_MODULES = ['weiboScrapy.spiders']
@@ -61,9 +61,12 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+EXTENSIONS = {
+    'scrapy.extensions.corestats.CoreStats': 0,
+    'scrapy.extensions.closespider.CloseSpider': 0,
+    'scrapy.extensions.logstats.LogStats': 0,
+    'weiboScrapy.extensions.SpiderCloseExtension': 1
+}
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html

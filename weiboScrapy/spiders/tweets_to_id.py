@@ -25,7 +25,18 @@ class TweetsInIDSpider(scrapy.Spider):
     before_date_enable = get_before_date()['enable']
     before_date = datetime.datetime.strptime(get_before_date()['date'], "%Y-%m-%d %H:%M")
 
+    def __init__(self, run_args, *args, **kwargs):
+        super(TweetsInIDSpider, self).__init__(*args, **kwargs)
+        self.keywords = run_args.get('keywords', [])
+        self.before_date_enable = run_args.get('beforeDate').get('enable', 'False') == str(True)
+        self.max_page = run_args.get('maxPageForTweets', 100)
+        self.before_date = datetime.datetime.strptime(run_args.get('beforeDate').get('date', '2000-01-01 00:00'),
+                                                      "%Y-%m-%d %H:%M")
+        self.target_ids = run_args.get('targetID', [])
+
     def start_requests(self):
+        if len(self.target_ids) == 0:
+            return
         for id_dict in self.target_ids:
             # print(id_dict)
             target_id = id_dict['userid']
@@ -45,7 +56,7 @@ class TweetsInIDSpider(scrapy.Spider):
                     creat_at = datetime.datetime.strptime(tweet_item['created_at'], "%Y-%m-%d %H:%M")
                     # print(creat_at.strftime("%Y-%m-%d %H:%M:%S"))
                     if (creat_at - self.before_date).total_seconds() < 0:
-                        logger.info('挖掘消息超过历史消息门限')
+                        logger.warning('挖掘消息超过历史消息门限')
                         return
                 yield tweet_item
                 usr_info = card['mblog']['user']
