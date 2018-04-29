@@ -28,56 +28,46 @@ https://shimo.im/docs/jzzS9Zp4vS8DL6iq
 - 爬虫设置\settings:scrapy框架总体设置
 - 任务调度\scheduler:提供调度运行
 ## 配置文件
-```json
-{
-  "weiboID": [
-    {
-      "username": "15678264837",
-      "password": "poiu11292"
-    },
-    {
-      "username": "15577724762",
-      "password": "poiu11292"
-    },
-    {
-      "username": "15678075354",
-      "password": "poiu11292"
-    },
-    {
-      "username": "15678265034",
-      "password": "poiu11292"
-    },
-    {
-      "username": "18404477785",
-      "password": "poiu11292"
-    }
-  ],
-  "keywords": [
-    {
-      "word": "天才小熊猫"
-    },
-    {
-      "word": "绝地求生+呆妹儿"
-    },
-    {
-      "word": "焦虑"
-    },
-    {
-      "word": "抑郁+亢奋"
-    }
-  ],
-  "target_ids": [
-    {
-      "userid": "1841611811"
-    }
-  ],
-  "max_page_for_tweets": 2,
-  "max_page_for_comments": 2,
-  "beforeDate": {
-    "enable": "False",
-    "date": "2018-04-22 00:00"
-  }
-}
+```yaml
+# coding:utf-8
+#登录使用的微博
+weiboID:
+    - username: '15678264837'
+      password: 'poiu11292'
+    - username: '15577724762'
+      password: 'poiu11292'
+    - username: '15678075354'
+      password: 'poiu11292'
+    - username: '15678265034'
+      password: 'poiu11292'
+    - username: '18404477785'
+      password: 'poiu11292'
+#关键字
+keywords:
+  - word: '绝地求生+XDD'
+  - word: '绝地求生+呆妹儿'
+  - word: '焦虑'
+  - word: '抑郁+亢奋'
+#  - word: '王俊凯'
+#  - word: 'TFBOYS+易烊千玺'
+#  - word: '海洛因'
+#  - word: '冰毒'
+
+#目标微博ID
+targetID:
+  - userid: '1575168515'
+#  - userid: '2873725572'
+#  - userid: '1038561943'
+
+#翻页上限：
+maxPageForTweets: 1000
+maxPageForComments: 1000
+
+#当enable为True时，仅爬取date值之前的信息。
+beforeDate:
+  enable: False
+  date: '2018-04-22 00:00'
+
 ```
 ## 输出数据
 ### tweets
