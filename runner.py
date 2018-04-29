@@ -29,7 +29,7 @@ if __name__ == '__main__':
     try:
         args = sys.argv[1:]
         input_file_path = args[0]
-        with open(input_file_path, 'r') as f:
+        with open(input_file_path, 'r', encoding='utf-8') as f:
             input_data = load(f)
         crawl(run_args=input_data)
         reactor.run()
