@@ -1,5 +1,6 @@
 # coding:utf-8
-#登录使用的微博
+
+# 登录使用的微博
 weiboID:
     - username: '15678264837'
       password: 'poiu11292'
@@ -11,30 +12,23 @@ weiboID:
       password: 'poiu11292'
     - username: '18404477785'
       password: 'poiu11292'
-#关键字
+      
+# 搜索关键字
 keywords:
-  - word: '天才小熊猫'
-  - word: '绝地求生+呆妹儿'
   - word: '焦虑'
-  - word: '抑郁+亢奋'
-#  - word: '王俊凯'
-#  - word: 'TFBOYS+易烊千玺'
-#  - word: '海洛因'
+  - word: '抑郁'
+  - word: '心理'
+  - word: '药物+成瘾'
 
-#  - word: '冰毒'
-
-#目标微博ID
+# 目标微博ID
 targetID:
-  - userid: '1841611811'
-#  - userid: '2873725572'
-#  - userid: '1038561943'
+  - userid: '1575168515'
 
-#翻页上限：
-maxPageForTweets: 2
-maxPageForComments: 2
+# 翻页上限：
+maxPageForTweets: 1000
+maxPageForComments: 1000
 
-#当enable为True时，仅爬取date值之前的信息。
+# 当 enable 为True时，仅爬取 date 值之前的信息。
 beforeDate:
   enable: False
   date: '2018-04-22 00:00'
-
