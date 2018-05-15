@@ -149,6 +149,8 @@ beforeDate:
 ```env
 SI_MONGODB_CRAWLER_URL=mongodb://czk:pass@127.0.0.1/test
 SI_REDIS_CRAWLER_URL=redis://:pass@127.0.0.1:6379/0
+# 代理池API地址
+API_URL=http://127.0.0.1:5000/
 ```
 ### 安装
 ```shell

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import random
 
@@ -9,7 +10,7 @@ from lxml import etree
 import dotenv
 from getenv import env
 
-from weiboScrapy.constans import SI_REDIS_CRAWLER_URL
+from weiboScrapy.constans import SI_REDIS_CRAWLER_URL, API_URL
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +20,21 @@ class ProxyCrawl:
         self.url = 'http://www.xicidaili.com/wn/'
         self.r = redis.StrictRedis.from_url(SI_REDIS_CRAWLER_URL)
         self.count = 0
+        self.api_url = API_URL
+
+    def get_proxy_from_api(self):
+        api_https_weibo = self.api_url + 'https/weibo.cn'
+        json_data = json.loads(requests.get(api_https_weibo).text)
+        proxy_list = json_data.get('proxy_list', [])
+        return proxy_list
+
+    def delete_proxy_from_api(self, proxy):
+        delete_proxy = self.api_url + 'invalid?proxy=' + proxy
+        requests.get(delete_proxy)
+        pass
 
     def load_page(self):
+
         logger.warning('开始爬取代理')
         self.count = 0
         headers = {
@@ -35,14 +49,9 @@ class ProxyCrawl:
         # print(len(content_field))
         for num in range(1, 50):
             ip = content_field[num].xpath('td[2]/text()')[0]
-            # print(ip)
-            # print(str(ip))
             port = content_field[num].xpath('td[3]/text()')[0]
-            # print(port)
             proctol = content_field[num].xpath('td[6]/text()')[0]
-            # print(proctol)
             proxy_string = proctol.lower() + "://" + ip + ":" + port
-            # print(proxy_string)
             try:
                 res = requests.get(url='https://httpbin.org/ip', proxies={'https': ip + ":" + port}, timeout=2).json()
                 self.r.set('proxy-' + str(num - 1), proxy_string, ex=600)

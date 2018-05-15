@@ -36,7 +36,7 @@ DOWNLOAD_TIMEOUT = 6
 COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {
@@ -55,7 +55,8 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
     'weiboScrapy.middlewares.UserAgentDownloaderMiddleware': 543,
     # 'weiboScrapy.middlewares.WeiboscrapyDownloaderMiddleware': 143,
-    'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
+    # 'weiboScrapy.middlewares.ProxyDownloaderMiddleware': 243,
+    'weiboScrapy.middlewares.ProxyAPIDownloaderMiddleware': 243,
 
 }
 

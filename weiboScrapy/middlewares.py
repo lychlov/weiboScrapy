@@ -7,6 +7,7 @@
 import os
 import random
 import scrapy
+from time import sleep
 import logging
 
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
@@ -123,6 +124,55 @@ class UserAgentDownloaderMiddleware(object):
         request.headers["User-Agent"] = agent
 
 
+class ProxyAPIDownloaderMiddleware(object):
+    def __init__(self):
+        self.proxy_crawl = ProxyCrawl()
+        # self.proxy_crawl.load_page()
+        self.count = 0
+        self.proxy_list = []
+        self.proxy_str = ""
+
+    def get_proxy_str(self):
+        while len(self.proxy_list) == 0:
+            self.proxy_list = self.proxy_crawl.get_proxy_from_api()
+            if len(self.proxy_list) > 0:
+                break
+            else:
+                logger.warning("当前代理池中代理资源不足，等待中")
+                sleep(30)
+        return "https://" + self.proxy_list.pop()
+
+    def process_response(self, request, response, spider):
+        # logger.info(str(response.status) + ":" + response.url)
+        if response.status in [404, 403, 418]:
+            logger.error(str(response.status) + ":" + response.url)
+            # raise CloseSpider('IP-baned')
+            self.proxy_crawl.delete_proxy_from_api(self.proxy_str)
+            self.proxy_str = self.get_proxy_str()
+            self.count = 0
+            # return
+        return response
+
+    def process_request(self, request, spider):
+        # 每150次请求换一个代理
+        if self.proxy_str == "":
+            self.proxy_str = self.get_proxy_str()
+        request.meta['proxy'] = self.proxy_str
+        self.count = self.count + 1
+        if self.count > 150:
+            self.proxy_str = self.get_proxy_str()
+            self.count = 0
+
+    def process_exception(self, request, exception, spider):
+        if isinstance(exception, RetryMiddleware.EXCEPTIONS_TO_RETRY):
+            # 删除该代理
+            # raise CloseSpider('IP-baned')
+            self.proxy_crawl.delete_proxy_from_api(self.proxy_str)
+            self.proxy_str = self.get_proxy_str()
+            self.count = 0
+            return request
+
+
 class ProxyDownloaderMiddleware(object):
     def __init__(self):
         self.proxy_crawl = ProxyCrawl()
@@ -140,6 +190,14 @@ class ProxyDownloaderMiddleware(object):
             self.count = 0
             return None
         return response
+
+    # def process_exception(self, request, exception, spider):
+    #     if isinstance(exception, RetryMiddleware.EXCEPTIONS_TO_RETRY):
+    #         # 删除该代理
+    #         # raise CloseSpider('IP-baned')
+    #         self.proxy_json = self._get_one_proxy()
+    #         self.count = 0
+    #         return request
 
     def process_request(self, request, spider):
         # 每150次请求换一个代理
